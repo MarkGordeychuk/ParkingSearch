@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sphinx address search</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <form class="search-form">
+      <input class="search-content" name="content" type="text" list="search-box">
+      <datalist id="search-box">
+      </datalist>
+      <button type="submit">Go!</button>
+    </form>
+    <article class="list-container">
+    </article>
+  </main>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/entry:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_DB=addresses
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PORT=5432
+#    ports:
+#      - "127.0.0.1:5432:5432"
+
+  sphinx:
+    image: macbre/sphinxsearch:latest
+    volumes:
+      - ./sphinx/data:/opt/sphinx/index  # directory where sphinx will store index data
+      - ./sphinx/sphinx.conf:/opt/sphinx/conf/sphinx.conf  # SphinxSE configuration file
+    depends_on:
+      - postgres
+#    ports:
+#      - "127.0.0.1:9306:9306"
+#      - "127.0.0.1:9312:9312"
+
+  web:
+    build: .
+    stop_signal: SIGINT
+    command: python -m flask --app app run --host=0.0.0.0
+    volumes:
+      - .:/app
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      - SPHINX_HOST=sphinx
+      - SPHINX_PORT=9306
+    depends_on:
+      - sphinx
